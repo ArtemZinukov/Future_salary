@@ -149,15 +149,16 @@ def get_stats_program_languages_sj(program_languages, secret_key):
 
 
 def get_tabular_statistics(title, stats):
-
-
-    table_data = (
-        ("Язык программирования", "Вакансий найдено", "Вакансий обработано", "Средняя зарплата"),
-        (get_stats_program_languages_sj(PROGRAM_LANGUAGES, secret_key_sj).keys(),)
-    )
+    table_data = [
+        ["Язык программирования", "Вакансий найдено", "Вакансий обработано", "Средняя зарплата"],
+    ]
+    for language, stat in stats.items():
+        vacancies_found = stat["vacancies_found"]
+        vacancies_processed = stat["vacancies_processed"]
+        average_salary = stat["average_salary"]
+        table_data.append([language, vacancies_found, vacancies_processed, average_salary])
     table_instance = AsciiTable(table_data, title)
-    table_instance.justify_columns[4] = 'right'
-    print(table_instance)
+    return table_instance.table
 
 
 def main():
