@@ -44,6 +44,7 @@ def get_vacancies_hh(program_language):
     page_number = 1
     vacancy_name = f"программист {program_language}"
     vacancies = []
+    total_vacancies = 0
     while page < page_number:
         headers = {'User-Agent': 'HH-User-Agent'}
         params = {
@@ -61,8 +62,9 @@ def get_vacancies_hh(program_language):
             continue
         page_paylord = response.json()
         vacancies.extend(page_paylord["items"])
+        total_vacancies = page_paylord["found"]
         page_number = page_paylord["pages"] - 1
-    return vacancies
+    return vacancies, total_vacancies
 
 
 def get_vacancies_sj(program_language, secret_key):
@@ -70,6 +72,7 @@ def get_vacancies_sj(program_language, secret_key):
     page = 0
     next_page = True
     vacancies = []
+    total_vacancies = 0
     while next_page:
         headers = {
             "X-Api-App-Id": secret_key
@@ -89,18 +92,19 @@ def get_vacancies_sj(program_language, secret_key):
             continue
         page_paylord = responce.json()
         vacancies.extend(page_paylord["objects"])
+        total_vacancies = page_paylord["total"]
         next_page = page_paylord["more"]
-    return vacancies
+    return vacancies, total_vacancies
 
 
-def get_hh_stats(vacancies):
+def get_hh_stats(vacancies, total_vacancies):
     if not vacancies:
         return {
             "vacancies_found": 0,
             "vacancies_processed": 0,
             "average_salary": 0
         }
-    number_of_vacancies = len(vacancies)
+    number_of_vacancies = total_vacancies
     salaries = [salary for vacancy in vacancies if (salary := predict_rub_salary_hh(vacancy)) != 0]
     vacancies_processed = len(salaries)
 
@@ -113,14 +117,14 @@ def get_hh_stats(vacancies):
     }
 
 
-def get_sj_stats(vacancies):
+def get_sj_stats(vacancies, total_vacancies):
     if not vacancies:
         return {
             "vacancies_found": 0,
             "vacancies_processed": 0,
             "average_salary": 0
         }
-    number_of_vacancies = len(vacancies)
+    number_of_vacancies = total_vacancies
     salaries = [salary for vacancy in vacancies if (salary := predict_rub_salary_sj(vacancy)) != 0]
     vacancies_processed = len(salaries)
 
@@ -136,16 +140,16 @@ def get_sj_stats(vacancies):
 def get_stats_program_languages_hh(program_languages):
     stat = {}
     for program_language in program_languages:
-        vacancies = get_vacancies_hh(program_language)
-        stat[program_language] = get_hh_stats(vacancies)
+        vacancies, total_vacancies = get_vacancies_hh(program_language)
+        stat[program_language] = get_hh_stats(vacancies, total_vacancies)
     return stat
 
 
 def get_stats_program_languages_sj(program_languages, secret_key):
     stat = {}
     for program_language in program_languages:
-        vacancies = get_vacancies_sj(program_language, secret_key)
-        stat[program_language] = get_sj_stats(vacancies)
+        vacancies, total_vacancies = get_vacancies_sj(program_language, secret_key)
+        stat[program_language] = get_sj_stats(vacancies, total_vacancies)
     return stat
 
 
