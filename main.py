@@ -42,11 +42,12 @@ def get_vacancies_hh(program_language):
     hh_url = "https://api.hh.ru/vacancies"
     page = 0
     page_number = 1
+    vacancy_name = f"программист {program_language}"
     vacancies = []
     while page < page_number:
         headers = {'User-Agent': 'HH-User-Agent'}
         params = {
-            "text": "программист" + program_language,
+            "text": vacancy_name,
             "area": 1,  # 1 - id Moscow
             "currency": "RUR",
             "page": page
@@ -113,23 +114,23 @@ def get_hh_stats(vacancies):
 
 
 def get_sj_stats(vacancies):
-    if vacancies:
+    if not vacancies:
+        return {
+            "vacancies_found": 0,
+            "vacancies_processed": 0,
+            "average_salary": 0
+        }
+    else:
         number_of_vacancies = len(vacancies)
         salaries = [predict_rub_salary_sj(vacancy) for vacancy in vacancies if predict_rub_salary_sj(vacancy) != 0]
         vacancies_processed = len(salaries)
-        average_salary = int(sum(salaries)/vacancies_processed) if vacancies_processed > 0 else 0
+        average_salary = int(sum(salaries) / vacancies_processed) if vacancies_processed > 0 else 0
         hh_stats = {
             "vacancies_found": number_of_vacancies,
             "vacancies_processed": vacancies_processed,
             "average_salary": average_salary
         }
         return hh_stats
-    else:
-        return {
-            "vacancies_found": 0,
-            "vacancies_processed": 0,
-            "average_salary": 0
-        }
 
 
 def get_stats_program_languages_hh(program_languages):
