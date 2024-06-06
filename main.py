@@ -94,23 +94,23 @@ def get_vacancies_sj(program_language, secret_key):
 
 
 def get_hh_stats(vacancies):
-    if vacancies:
-        number_of_vacancies = len(vacancies)
-        salaries = [predict_rub_salary_hh(vacancy) for vacancy in vacancies if predict_rub_salary_hh(vacancy) != 0]
-        vacancies_processed = len(salaries)
-        average_salary = int(sum(salaries)/vacancies_processed) if vacancies_processed > 0 else 0
-        hh_stats = {
-            "vacancies_found": number_of_vacancies,
-            "vacancies_processed": vacancies_processed,
-            "average_salary": average_salary
-        }
-        return hh_stats
-    else:
+    if not vacancies:
         return {
             "vacancies_found": 0,
             "vacancies_processed": 0,
             "average_salary": 0
         }
+    number_of_vacancies = len(vacancies)
+    salaries = [predict_rub_salary_hh(vacancy) for vacancy in vacancies if predict_rub_salary_hh(vacancy) != 0]
+    vacancies_processed = len(salaries)
+
+    average_salary = int(sum(salaries)/vacancies_processed) if vacancies_processed > 0 else 0
+
+    return {
+        "vacancies_found": number_of_vacancies,
+        "vacancies_processed": vacancies_processed,
+        "average_salary": average_salary
+    }
 
 
 def get_sj_stats(vacancies):
@@ -120,17 +120,17 @@ def get_sj_stats(vacancies):
             "vacancies_processed": 0,
             "average_salary": 0
         }
-    else:
-        number_of_vacancies = len(vacancies)
-        salaries = [predict_rub_salary_sj(vacancy) for vacancy in vacancies if predict_rub_salary_sj(vacancy) != 0]
-        vacancies_processed = len(salaries)
-        average_salary = int(sum(salaries) / vacancies_processed) if vacancies_processed > 0 else 0
-        hh_stats = {
-            "vacancies_found": number_of_vacancies,
-            "vacancies_processed": vacancies_processed,
-            "average_salary": average_salary
-        }
-        return hh_stats
+    number_of_vacancies = len(vacancies)
+    salaries = [predict_rub_salary_sj(vacancy) for vacancy in vacancies if predict_rub_salary_sj(vacancy) != 0]
+    vacancies_processed = len(salaries)
+
+    average_salary = int(sum(salaries) / vacancies_processed) if vacancies_processed > 0 else 0
+
+    return {
+        "vacancies_found": number_of_vacancies,
+        "vacancies_processed": vacancies_processed,
+        "average_salary": average_salary
+    }
 
 
 def get_stats_program_languages_hh(program_languages):
