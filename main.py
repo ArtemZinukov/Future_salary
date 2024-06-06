@@ -47,7 +47,7 @@ def get_vacancies_hh(program_language):
         headers = {'User-Agent': 'HH-User-Agent'}
         params = {
             "text": "программист" + program_language,
-            "area": 1,
+            "area": 1,  # 1 - id Moscow
             "currency": "RUR",
             "page": page
         }
@@ -75,8 +75,8 @@ def get_vacancies_sj(program_language, secret_key):
         }
         params = {
             "keyword": program_language,
-            "catalogues": 48,
-            "town": 4,
+            "catalogues": 48,  # 48 - id vacancy programmer
+            "town": 4,  # 4 - id Moscow
             "page": page
         }
         responce = requests.get(sj_url, headers=headers, params=params)
