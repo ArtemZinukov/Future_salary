@@ -101,7 +101,7 @@ def get_hh_stats(vacancies):
             "average_salary": 0
         }
     number_of_vacancies = len(vacancies)
-    salaries = [predict_rub_salary_hh(vacancy) for vacancy in vacancies if predict_rub_salary_hh(vacancy) != 0]
+    salaries = [salary for vacancy in vacancies if (salary := predict_rub_salary_hh(vacancy)) != 0]
     vacancies_processed = len(salaries)
 
     average_salary = int(sum(salaries)/vacancies_processed) if vacancies_processed > 0 else 0
@@ -121,7 +121,7 @@ def get_sj_stats(vacancies):
             "average_salary": 0
         }
     number_of_vacancies = len(vacancies)
-    salaries = [predict_rub_salary_sj(vacancy) for vacancy in vacancies if predict_rub_salary_sj(vacancy) != 0]
+    salaries = [salary for vacancy in vacancies if (salary := predict_rub_salary_sj(vacancy)) != 0]
     vacancies_processed = len(salaries)
 
     average_salary = int(sum(salaries) / vacancies_processed) if vacancies_processed > 0 else 0
