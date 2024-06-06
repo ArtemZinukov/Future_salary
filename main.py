@@ -11,11 +11,11 @@ PROGRAM_LANGUAGES = ['Java', 'Javascript', 'Python', 'TypeScript', 'Swift', 'Sca
 
 def predict_salary(salary_from, salary_to):
     average_salary = 0
-    if salary_from > 0 and salary_to > 0:
+    if salary_from and salary_to:
         average_salary = int((salary_from+salary_to) / 2)
-    elif salary_from > 0:
+    elif salary_from:
         average_salary = int(salary_from * 1.2)
-    elif salary_to > 0:
+    elif salary_to:
         average_salary = int(salary_to * 0.8)
     return average_salary
 
@@ -104,7 +104,7 @@ def get_hh_stats(vacancies):
     salaries = [salary for vacancy in vacancies if (salary := predict_rub_salary_hh(vacancy)) != 0]
     vacancies_processed = len(salaries)
 
-    average_salary = int(sum(salaries)/vacancies_processed) if vacancies_processed > 0 else 0
+    average_salary = int(sum(salaries)/vacancies_processed) if vacancies_processed else 0
 
     return {
         "vacancies_found": number_of_vacancies,
@@ -124,7 +124,7 @@ def get_sj_stats(vacancies):
     salaries = [salary for vacancy in vacancies if (salary := predict_rub_salary_sj(vacancy)) != 0]
     vacancies_processed = len(salaries)
 
-    average_salary = int(sum(salaries) / vacancies_processed) if vacancies_processed > 0 else 0
+    average_salary = int(sum(salaries) / vacancies_processed) if vacancies_processed else 0
 
     return {
         "vacancies_found": number_of_vacancies,
