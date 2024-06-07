@@ -60,10 +60,10 @@ def get_vacancies_hh(program_language):
             response.raise_for_status()
         except requests.exceptions.HTTPError:
             continue
-        page_paylord = response.json()
-        vacancies.extend(page_paylord["items"])
-        total_vacancies = page_paylord["found"]
-        page_number = page_paylord["pages"] - 1
+        page_payload = response.json()
+        vacancies.extend(page_payload["items"])
+        total_vacancies = page_payload["found"]
+        page_number = page_payload["pages"] - 1
     return vacancies, total_vacancies
 
 
@@ -90,10 +90,10 @@ def get_vacancies_sj(program_language, secret_key):
             responce.raise_for_status()
         except requests.exceptions.HTTPError:
             continue
-        page_paylord = responce.json()
-        vacancies.extend(page_paylord["objects"])
-        total_vacancies = page_paylord["total"]
-        next_page = page_paylord["more"]
+        page_payload = responce.json()
+        vacancies.extend(page_payload["objects"])
+        total_vacancies = page_payload["total"]
+        next_page = page_payload["more"]
     return vacancies, total_vacancies
 
 
@@ -105,7 +105,7 @@ def get_hh_stats(vacancies, total_vacancies):
             "average_salary": 0
         }
     number_of_vacancies = total_vacancies
-    salaries = [salary for vacancy in vacancies if (salary := predict_rub_salary_hh(vacancy)) != 0]
+    salaries = [salary for vacancy in vacancies if not (salary := predict_rub_salary_hh(vacancy))]
     vacancies_processed = len(salaries)
 
     average_salary = int(sum(salaries)/vacancies_processed) if vacancies_processed else 0
@@ -125,7 +125,7 @@ def get_sj_stats(vacancies, total_vacancies):
             "average_salary": 0
         }
     number_of_vacancies = total_vacancies
-    salaries = [salary for vacancy in vacancies if (salary := predict_rub_salary_sj(vacancy)) != 0]
+    salaries = [salary for vacancy in vacancies if not (salary := predict_rub_salary_sj(vacancy))]
     vacancies_processed = len(salaries)
 
     average_salary = int(sum(salaries) / vacancies_processed) if vacancies_processed else 0
